@@ -36,4 +36,35 @@ public class IngredientsController(AppDbContext db) : ControllerBase
         await db.SaveChangesAsync();
         return CreatedAtAction(nameof(GetById), new { id = ingredient.Id }, ingredient);
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var ingredient = await db.Ingredients.FindAsync(id);
+
+        if (ingredient is null)
+        {
+            return NotFound();
+        }
+
+        db.Remove(ingredient);
+        await db.SaveChangesAsync();
+        return NoContent();
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, Ingredient ingredient)
+    {
+        var existing = await db.Ingredients.FindAsync(id);
+
+        if (existing is null)
+        {
+            return NotFound();
+        }
+
+        existing.Name = ingredient.Name;
+        await db.SaveChangesAsync();
+        return NoContent();
+    }
 }
+
