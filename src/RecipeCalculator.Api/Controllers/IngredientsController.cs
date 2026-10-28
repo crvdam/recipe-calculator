@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RecipeCalculator.Api.Data;
 using RecipeCalculator.Api.Entities;
+using RecipeCalculator.Api.Dtos;
 
 namespace RecipeCalculator.Api.Controllers;
 
@@ -10,14 +11,16 @@ namespace RecipeCalculator.Api.Controllers;
 public class IngredientsController(AppDbContext db) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<Ingredient>>> GetAll()
+    public async Task<ActionResult<List<IngredientResponse>>> GetAll()
     {
-        var ingredients = await db.Ingredients.ToListAsync();
+        var ingredients = await db.Ingredients
+            .Select(ingredient => new IngredientResponse(ingredient.Id, ingredient.Name))
+            .ToListAsync();
         return Ok(ingredients);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Ingredient>> GetById(int id)
+    public async Task<ActionResult<IngredientResponse>> GetById(int id)
     {
         var ingredient = await db.Ingredients.FindAsync(id);
 
@@ -26,15 +29,19 @@ public class IngredientsController(AppDbContext db) : ControllerBase
             return NotFound();
         }
 
-        return Ok(ingredient);
+        return Ok( IngredientResponse.From(ingredient));
     }
 
     [HttpPost]
-    public async Task<ActionResult<Ingredient>> Create(Ingredient ingredient)
+    public async Task<ActionResult<IngredientResponse>> Create(IngredientRequest request)
     {
+        var ingredient = new Ingredient { Name = request.Name };
+
         db.Add(ingredient);
         await db.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetById), new { id = ingredient.Id }, ingredient);
+
+        var response = IngredientResponse.From(ingredient);
+        return CreatedAtAction(nameof(GetById), new { id = ingredient.Id }, response);
     }
 
     [HttpDelete("{id}")]
@@ -53,7 +60,7 @@ public class IngredientsController(AppDbContext db) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Ingredient ingredient)
+    public async Task<IActionResult> Update(int id, IngredientRequest request)
     {
         var existing = await db.Ingredients.FindAsync(id);
 
@@ -62,7 +69,7 @@ public class IngredientsController(AppDbContext db) : ControllerBase
             return NotFound();
         }
 
-        existing.Name = ingredient.Name;
+        existing.Name = request.Name;
         await db.SaveChangesAsync();
         return NoContent();
     }
