@@ -68,6 +68,13 @@ public class IngredientsController(AppDbContext db) : ControllerBase
             return NotFound();
         }
 
+        var isUsed = await db.RecipeLines.AnyAsync(line => line.IngredientId == id);
+
+        if (isUsed)
+        {
+            return Conflict("Ingredient is still used in a recipe");
+        }
+
         db.Remove(ingredient);
         await db.SaveChangesAsync();
         return NoContent();
