@@ -7,7 +7,9 @@ public record RecipeResponse(
     int Id,
     string Name,
     decimal Portions,
-    List<RecipeLineResponse> RecipeLines
+    List<RecipeLineResponse> RecipeLines,
+    decimal? TotalCost,
+    decimal? CostPerPortion
 )
 {
     public static RecipeResponse From(Recipe recipe) =>
@@ -15,7 +17,9 @@ public record RecipeResponse(
             recipe.Id,
             recipe.Name,
             recipe.Portions,
-            recipe.RecipeLines.Select(RecipeLineResponse.From).ToList()
+            recipe.RecipeLines.Select(RecipeLineResponse.From).ToList(),
+            recipe.TotalCost,
+            recipe.CostPerPortion
         );
 }
 
