@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RecipeCalculator.Api.Data;
-using RecipeCalculator.Api.Entities;
 using RecipeCalculator.Api.Dtos;
+using RecipeCalculator.Api.Entities;
 
 namespace RecipeCalculator.Api.Controllers;
 
@@ -13,8 +13,15 @@ public class IngredientsController(AppDbContext db) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<IngredientResponse>>> GetAll()
     {
-        var ingredients = await db.Ingredients
-            .Select(ingredient => new IngredientResponse(ingredient.Id, ingredient.Name))
+        var ingredients = await db
+            .Ingredients.Select(ingredient => new IngredientResponse(
+                ingredient.Id,
+                ingredient.Name,
+                ingredient.BaseUnit,
+                ingredient.PurchasePrice,
+                ingredient.PurchaseQuantity,
+                ingredient.YieldPercentage
+            ))
             .ToListAsync();
         return Ok(ingredients);
     }
@@ -24,18 +31,25 @@ public class IngredientsController(AppDbContext db) : ControllerBase
     {
         var ingredient = await db.Ingredients.FindAsync(id);
 
-        if (ingredient is null) 
+        if (ingredient is null)
         {
             return NotFound();
         }
 
-        return Ok( IngredientResponse.From(ingredient));
+        return Ok(IngredientResponse.From(ingredient));
     }
 
     [HttpPost]
     public async Task<ActionResult<IngredientResponse>> Create(IngredientRequest request)
     {
-        var ingredient = new Ingredient { Name = request.Name };
+        var ingredient = new Ingredient
+        {
+            Name = request.Name,
+            BaseUnit = request.BaseUnit!.Value,
+            PurchasePrice = request.PurchasePrice,
+            PurchaseQuantity = request.PurchaseQuantity,
+            YieldPercentage = request.YieldPercentage ?? 100,
+        };
 
         db.Add(ingredient);
         await db.SaveChangesAsync();
@@ -70,8 +84,12 @@ public class IngredientsController(AppDbContext db) : ControllerBase
         }
 
         existing.Name = request.Name;
+        existing.BaseUnit = request.BaseUnit!.Value;
+        existing.PurchasePrice = request.PurchasePrice;
+        existing.PurchaseQuantity = request.PurchaseQuantity;
+        existing.YieldPercentage = request.YieldPercentage ?? 100;
+
         await db.SaveChangesAsync();
-        return NoContent();
+        return Ok(IngredientResponse.From(existing));
     }
 }
-

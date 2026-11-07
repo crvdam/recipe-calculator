@@ -22,9 +22,23 @@ namespace RecipeCalculator.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("BaseUnit")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("PurchasePrice")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("PurchaseQuantity")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("YieldPercentage")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
