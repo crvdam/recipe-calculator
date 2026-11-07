@@ -96,23 +96,49 @@ public class RecipesController(AppDbContext db) : ControllerBase
         return NoContent();
     }
 
-    // [HttpPut("{id}")]
-    // public async Task<IActionResult> Update(int id, IngredientRequest request)
-    // {
-    //     var existing = await db.Ingredients.FindAsync(id);
+    [HttpPut("{id}")]
+    public async Task<ActionResult<RecipeResponse>> Update(int id, RecipeRequest request)
+    {
+        var existing = await db
+            .Recipes.Include(recipe => recipe.RecipeLines)
+            .FirstOrDefaultAsync(recipe => recipe.Id == id);
 
-    //     if (existing is null)
-    //     {
-    //         return NotFound();
-    //     }
+        if (existing is null)
+        {
+            return NotFound();
+        }
 
-    //     existing.Name = request.Name;
-    //     existing.BaseUnit = request.BaseUnit!.Value;
-    //     existing.PurchasePrice = request.PurchasePrice;
-    //     existing.PurchaseQuantity = request.PurchaseQuantity;
-    //     existing.YieldPercentage = request.YieldPercentage ?? 100;
+        var ingredientIds = request
+            .RecipeLines.Select(line => line.IngredientId)
+            .Distinct()
+            .ToList();
+        var existingCount = await db.Ingredients.CountAsync(ingredient =>
+            ingredientIds.Contains(ingredient.Id)
+        );
 
-    //     await db.SaveChangesAsync();
-    //     returnOk(IngredientResponse.From(existing));
-    // }
+        if (existingCount != ingredientIds.Count)
+        {
+            return BadRequest("One or more ingredients do not exist.");
+        }
+
+        existing.Name = request.Name;
+        existing.Portions = request.Portions;
+
+        existing.RecipeLines.Clear();
+        foreach (var line in request.RecipeLines)
+        {
+            existing.RecipeLines.Add(
+                new RecipeLine { IngredientId = line.IngredientId, Quantity = line.Quantity }
+            );
+        }
+
+        await db.SaveChangesAsync();
+
+        var updated = await db
+            .Recipes.Include(recipe => recipe.RecipeLines)
+                .ThenInclude(line => line.Ingredient)
+            .FirstAsync(recipe => recipe.Id == id);
+
+        return Ok(RecipeResponse.From(updated));
+    }
 }
