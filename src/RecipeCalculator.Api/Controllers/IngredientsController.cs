@@ -13,18 +13,8 @@ public class IngredientsController(AppDbContext db) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<IngredientResponse>>> GetAll()
     {
-        var ingredients = await db
-            .Ingredients.Select(ingredient => new IngredientResponse(
-                ingredient.Id,
-                ingredient.Name,
-                ingredient.BaseUnit,
-                ingredient.PurchasePrice,
-                ingredient.PurchaseQuantity,
-                ingredient.YieldPercentage,
-                ingredient.CostPerBaseUnit
-            ))
-            .ToListAsync();
-        return Ok(ingredients);
+        var ingredients = await db.Ingredients.ToListAsync();
+        return Ok(ingredients.Select(IngredientResponse.From).ToList());
     }
 
     [HttpGet("{id}")]
