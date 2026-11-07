@@ -20,7 +20,8 @@ public class IngredientsController(AppDbContext db) : ControllerBase
                 ingredient.BaseUnit,
                 ingredient.PurchasePrice,
                 ingredient.PurchaseQuantity,
-                ingredient.YieldPercentage
+                ingredient.YieldPercentage,
+                ingredient.CostPerBaseUnit
             ))
             .ToListAsync();
         return Ok(ingredients);

@@ -9,7 +9,8 @@ public record IngredientResponse(
     Unit BaseUnit,
     decimal? PurchasePrice,
     decimal? PurchaseQuantity,
-    int YieldPercentage
+    int YieldPercentage,
+    decimal? CostPerBaseUnit
 )
 {
     public static IngredientResponse From(Ingredient ingredient) =>
@@ -19,7 +20,8 @@ public record IngredientResponse(
             ingredient.BaseUnit,
             ingredient.PurchasePrice,
             ingredient.PurchaseQuantity,
-            ingredient.YieldPercentage
+            ingredient.YieldPercentage,
+            ingredient.CostPerBaseUnit
         );
 }
 

@@ -16,4 +16,7 @@ public class Ingredient
     public int YieldPercentage { get; set; } = 100;
 
     public required Unit BaseUnit { get; set; }
+
+    public decimal? CostPerBaseUnit =>
+        PurchaseQuantity is > 0 ? PurchasePrice / PurchaseQuantity : null;
 }
