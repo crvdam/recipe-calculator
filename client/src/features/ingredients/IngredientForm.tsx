@@ -43,6 +43,9 @@ function IngredientForm() {
                 console.error(
                     `Failed to load ingredient ${id}: ${response.status}`,
                 );
+
+                navigate('/ingredients', { replace: true });
+
                 return;
             }
 
