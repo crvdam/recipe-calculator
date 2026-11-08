@@ -63,7 +63,7 @@ public class IngredientsController(AppDbContext db) : ControllerBase
 
         if (isUsed)
         {
-            return Conflict("Ingredient is still used in a recipe");
+            return Problem(statusCode: 409, title: "Ingredient is still used in a recipe");
         }
 
         db.Remove(ingredient);

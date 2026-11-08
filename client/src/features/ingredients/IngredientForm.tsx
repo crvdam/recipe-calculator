@@ -29,6 +29,7 @@ function IngredientForm() {
         yieldPercentage: '100',
     });
     const isEdit = id !== undefined;
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (id === undefined) return;
@@ -68,6 +69,8 @@ function IngredientForm() {
     const handleSubmit = async (event: React.SubmitEvent) => {
         event.preventDefault();
 
+        setError(null);
+
         const request: IngredientRequest = {
             name: form.name,
             baseUnit: form.baseUnit,
@@ -92,7 +95,10 @@ function IngredientForm() {
         );
 
         if (!response.ok) {
-            console.error(await response.json());
+            const problem = await response.json();
+            console.error(problem);
+            setError(problem.title);
+
             return;
         }
 
@@ -103,71 +109,101 @@ function IngredientForm() {
         navigate(`/ingredients/${saved.id}`);
     };
 
+    const handleDelete = async () => {
+        setError(null);
+
+        if (!window.confirm(`Delete ${form.name}?`)) return;
+
+        const response = await fetch(`/api/ingredients/${id}`, {
+            method: 'DELETE',
+        });
+
+        if (!response.ok) {
+            const problem = await response.json();
+            console.error(problem);
+            setError(problem.title);
+
+            return;
+        }
+
+        reload();
+
+        navigate('/ingredients');
+    };
+
     return (
-        <form className="form" onSubmit={handleSubmit}>
-            <label className="form__field">
-                Name
-                <input
-                    name="name"
-                    required
-                    value={form.name}
-                    onChange={handleChange}
-                />
-            </label>
+        <>
+            <form className="form" onSubmit={handleSubmit}>
+                <label className="form__field">
+                    Name
+                    <input
+                        name="name"
+                        required
+                        value={form.name}
+                        onChange={handleChange}
+                    />
+                </label>
 
-            <label className="form__field">
-                Base unit
-                <select
-                    name="baseUnit"
-                    value={form.baseUnit}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="Gram">Gram</option>
-                    <option value="Millilitre">Millilitre</option>
-                    <option value="Piece">Piece</option>
-                </select>
-            </label>
+                <label className="form__field">
+                    Base unit
+                    <select
+                        name="baseUnit"
+                        value={form.baseUnit}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="Gram">Gram</option>
+                        <option value="Millilitre">Millilitre</option>
+                        <option value="Piece">Piece</option>
+                    </select>
+                </label>
 
-            <label className="form__field">
-                Purchase price (€)
-                <input
-                    name="purchasePrice"
-                    type="number"
-                    min="0.01"
-                    step="0.01"
-                    value={form.purchasePrice}
-                    onChange={handleChange}
-                />
-            </label>
+                <label className="form__field">
+                    Purchase price (€)
+                    <input
+                        name="purchasePrice"
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        value={form.purchasePrice}
+                        onChange={handleChange}
+                    />
+                </label>
 
-            <label className="form__field">
-                Quantity ({form.baseUnit})
-                <input
-                    name="purchaseQuantity"
-                    type="number"
-                    min="0.01"
-                    step="0.01"
-                    value={form.purchaseQuantity}
-                    onChange={handleChange}
-                />
-            </label>
+                <label className="form__field">
+                    Quantity ({form.baseUnit})
+                    <input
+                        name="purchaseQuantity"
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        value={form.purchaseQuantity}
+                        onChange={handleChange}
+                    />
+                </label>
 
-            <label className="form__field">
-                Yield (%)
-                <input
-                    name="yieldPercentage"
-                    type="number"
-                    min="1"
-                    max="100"
-                    step="1"
-                    value={form.yieldPercentage}
-                    onChange={handleChange}
-                />
-            </label>
+                <label className="form__field">
+                    Yield (%)
+                    <input
+                        name="yieldPercentage"
+                        type="number"
+                        min="1"
+                        max="100"
+                        step="1"
+                        value={form.yieldPercentage}
+                        onChange={handleChange}
+                    />
+                </label>
 
-            <button type="submit">Save</button>
-        </form>
+                <button type="submit">Save</button>
+            </form>
+            {isEdit && (
+                <button type="button" onClick={handleDelete}>
+                    Delete
+                </button>
+            )}
+            {error && <p role="alert">{error}</p>}
+        </>
     );
 }
 
