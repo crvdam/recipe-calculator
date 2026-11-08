@@ -1,0 +1,9 @@
+.nav-list {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+}
+
+.nav {
+    margin: auto;
+}
