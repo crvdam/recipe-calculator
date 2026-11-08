@@ -3,27 +3,27 @@ import { NavLink, Outlet } from 'react-router';
 import { useEffect, useState } from 'react';
 import type { IngredientResponse } from './types';
 
+async function fetchIngredients(): Promise<IngredientResponse[]> {
+    const response = await fetch('/api/ingredients');
+    return response.json();
+}
+
 export default function IngredientPage() {
     const [ingredients, setIngredients] = useState<IngredientResponse[]>([]);
 
     useEffect(() => {
         let ignore = false;
-
-        const load = async () => {
-            const response = await fetch('/api/ingredients');
-            const data: IngredientResponse[] = await response.json();
-
-            if (!ignore) {
-                setIngredients(data);
-            }
-        };
-
-        load();
-
+        fetchIngredients().then((data) => {
+            if (!ignore) setIngredients(data);
+        });
         return () => {
             ignore = true;
         };
     }, []);
+
+    const reload = async () => {
+        setIngredients(await fetchIngredients());
+    };
 
     return (
         <>
@@ -40,7 +40,7 @@ export default function IngredientPage() {
                 </ul>
 
                 <section>
-                    <Outlet />
+                    <Outlet context={{ reload }} />
                 </section>
             </div>
         </>
