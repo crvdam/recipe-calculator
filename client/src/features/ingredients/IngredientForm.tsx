@@ -31,6 +31,22 @@ export default function IngredientForm() {
                     : Number(form.purchaseQuantity),
             yieldPercentage: Number(form.yieldPercentage),
         };
+
+        const response = await fetch('/api/ingredients', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(request),
+        });
+
+        if (!response.ok) {
+            console.error(await response.json());
+            return;
+        }
+
+        const created = await response.json();
+        console.log(created);
     };
 
     return (
