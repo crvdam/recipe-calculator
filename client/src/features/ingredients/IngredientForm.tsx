@@ -28,6 +28,9 @@ function IngredientForm() {
         purchaseQuantity: '',
         yieldPercentage: '100',
     });
+    const [ingredient, setIngredient] = useState<IngredientResponse | null>(
+        null,
+    );
     const isEdit = id !== undefined;
     const [error, setError] = useState<string | null>(null);
 
@@ -53,6 +56,7 @@ function IngredientForm() {
 
             if (!ignore) {
                 setForm(toFormState(ingredient));
+                setIngredient(ingredient);
             }
         };
 
@@ -106,6 +110,8 @@ function IngredientForm() {
         }
 
         const saved: IngredientResponse = await response.json();
+
+        setIngredient(saved);
 
         reload();
 
@@ -200,12 +206,21 @@ function IngredientForm() {
 
                 <button type="submit">Save</button>
             </form>
+
             {isEdit && (
                 <button type="button" onClick={handleDelete}>
                     Delete
                 </button>
             )}
+
             {error && <p role="alert">{error}</p>}
+
+            {ingredient && (
+                <p>
+                    Cost per {ingredient.baseUnit.toLowerCase()}:{' '}
+                    {ingredient.costPerBaseUnit ?? '–'}
+                </p>
+            )}
         </>
     );
 }
