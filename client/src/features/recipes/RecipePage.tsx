@@ -1,5 +1,5 @@
 import './RecipePage.css';
-import { NavLink, Outlet } from 'react-router';
+import { NavLink, Outlet, Link } from 'react-router';
 import { useEffect, useState } from 'react';
 import type { RecipeResponse } from './types';
 
@@ -29,15 +29,18 @@ export default function RecipePage() {
         <>
             <h1>Recipes</h1>
             <div className="detail-layout">
-                <ul className="item-list">
-                    {recipes.map((recipe) => (
-                        <li key={recipe.id} className="item-list__item">
-                            <NavLink to={`/recipes/${recipe.id}`}>
-                                {recipe.name}
-                            </NavLink>
-                        </li>
-                    ))}
-                </ul>
+                <div>
+                    <Link to="new">New Recipe</Link>
+                    <ul className="item-list">
+                        {recipes.map((recipe) => (
+                            <li key={recipe.id} className="item-list__item">
+                                <NavLink to={`/recipes/${recipe.id}`}>
+                                    {recipe.name}
+                                </NavLink>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
 
                 <section>
                     <Outlet context={{ reload }} />
