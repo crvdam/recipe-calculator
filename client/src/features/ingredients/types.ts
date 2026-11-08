@@ -15,3 +15,13 @@ export type IngredientRequest = {
 };
 
 export type Unit = 'Gram' | 'Millilitre' | 'Piece';
+
+export type IngredientResponse = {
+    id: number;
+    name: string;
+    baseUnit: Unit;
+    purchasePrice: number | null;
+    purchaseQuantity: number | null;
+    yieldPercentage: number;
+    costPerBaseUnit: number | null;
+};
