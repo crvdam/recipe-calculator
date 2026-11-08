@@ -6,7 +6,7 @@ export default function Navigation() {
         <nav aria-label="Main">
             <ul className="nav-list">
                 <li>
-                    <NavLink to="/home">Home</NavLink>
+                    <NavLink to="/">Home</NavLink>
                 </li>
                 <li>
                     <NavLink to="/ingredients">Ingredients</NavLink>

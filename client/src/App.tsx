@@ -10,8 +10,7 @@ export default function App() {
             <Navigation />
             <main>
                 <Routes>
-                    <Route path="/" element={<Navigate to="/home" replace />} />
-                    <Route path="/home" element={<HomePage />} />
+                    <Route path="/" element={<HomePage />} />
                     <Route path="/ingredients" element={<IngredientsPage />} />
                     <Route path="/recipes" element={<RecipesPage />} />
                     <Route path="*" element={<p>Page not found</p>} />
