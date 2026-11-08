@@ -4,6 +4,7 @@ import Navigation from './components/Navigation';
 import IngredientPage from './features/ingredients/IngredientPage';
 import RecipePage from './features/recipes/RecipePage';
 import IngredientForm from './features/ingredients/IngredientForm';
+import RecipeForm from './features/recipes/RecipeForm';
 
 export default function App() {
     return (
@@ -22,7 +23,16 @@ export default function App() {
                         <Route path="new" element={<IngredientForm />} />
                         <Route path=":id" element={<IngredientForm />} />
                     </Route>
-                    <Route path="/recipes" element={<RecipePage />} />
+                    <Route path="/recipes" element={<RecipePage />}>
+                        <Route
+                            index
+                            element={
+                                <p>Select an recipe or create a new one.</p>
+                            }
+                        />
+                        <Route path="new" element={<RecipeForm />} />
+                        <Route path=":id" element={<RecipeForm />} />
+                    </Route>
                     <Route path="*" element={<p>Page not found</p>} />
                 </Routes>
             </main>

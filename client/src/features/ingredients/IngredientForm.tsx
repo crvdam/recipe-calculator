@@ -65,7 +65,7 @@ function IngredientForm() {
         return () => {
             ignore = true;
         };
-    }, [id]);
+    }, [id, navigate]);
 
     const handleChange = (
         event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
