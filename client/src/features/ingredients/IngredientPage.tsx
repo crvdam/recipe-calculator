@@ -1,4 +1,3 @@
-import './IngredientPage.css';
 import { NavLink, Outlet, Link } from 'react-router';
 import { useEffect, useState } from 'react';
 import type { IngredientResponse } from './types';
@@ -29,8 +28,10 @@ export default function IngredientPage() {
         <>
             <h1>Ingredients</h1>
             <div className="detail-layout">
-                <div>
-                    <Link to="new">New ingredient</Link>
+                <div className="detail-layout__left">
+                    <Link to="new" className="btn btn-primary">
+                        New ingredient
+                    </Link>
                     <ul className="item-list">
                         {ingredients.map((ingredient) => (
                             <li key={ingredient.id} className="item-list__item">
@@ -42,9 +43,11 @@ export default function IngredientPage() {
                     </ul>
                 </div>
 
-                <section>
+                <div className="detail-layout__middle">
                     <Outlet context={{ reload }} />
-                </section>
+                </div>
+
+                <div className="detail-layout__right"></div>
             </div>
         </>
     );

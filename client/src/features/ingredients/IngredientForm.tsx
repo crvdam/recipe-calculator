@@ -1,5 +1,4 @@
 import { useNavigate, useOutletContext, useParams } from 'react-router';
-import './IngredientForm.css';
 import type {
     IngredientRequest,
     IngredientFormState,
@@ -204,14 +203,21 @@ function IngredientForm() {
                     />
                 </label>
 
-                <button type="submit">Save</button>
+                <div className="button-container">
+                    {isEdit && (
+                        <button
+                            type="button"
+                            className="btn btn-delete"
+                            onClick={handleDelete}
+                        >
+                            Delete
+                        </button>
+                    )}
+                    <button type="submit" className="btn btn-secondary">
+                        Save
+                    </button>
+                </div>
             </form>
-
-            {isEdit && (
-                <button type="button" onClick={handleDelete}>
-                    Delete
-                </button>
-            )}
 
             {error && <p role="alert">{error}</p>}
 

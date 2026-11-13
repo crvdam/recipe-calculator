@@ -1,5 +1,4 @@
 import { useNavigate, useOutletContext, useParams } from 'react-router';
-import './RecipeForm.css';
 import type { RecipeRequest, RecipeFormState, RecipeResponse } from './types';
 import type { IngredientResponse } from '../ingredients/types';
 import { useEffect, useState } from 'react';
@@ -201,12 +200,24 @@ function RecipeForm() {
                 </label>
 
                 <fieldset>
-                    <legend>Ingredients</legend>
+                    <legend className="visually-hidden">Ingredients</legend>
 
-                    {form.recipeLines.map((line) => (
+                    {form.recipeLines.length > 0 && (
+                        <div
+                            className="form__line form__line--header"
+                            aria-hidden="true"
+                        >
+                            <span>Ingredient</span>
+                            <span>Quantity</span>
+                        </div>
+                    )}
+
+                    {form.recipeLines.map((line, index) => (
                         <div key={line.key} className="form__line">
                             <label className="form__field">
-                                Ingredient
+                                <span className="visually-hidden">
+                                    Ingredient, line {index + 1}
+                                </span>
                                 <select
                                     required
                                     value={line.ingredientId}
@@ -231,7 +242,9 @@ function RecipeForm() {
                             </label>
 
                             <label className="form__field">
-                                Quantity
+                                <span className="visually-hidden">
+                                    Quantity, line {index + 1}
+                                </span>
                                 <input
                                     type="number"
                                     required
@@ -250,26 +263,40 @@ function RecipeForm() {
 
                             <button
                                 type="button"
+                                className="btn btn-delete"
                                 onClick={() => removeLine(line.key)}
+                                aria-label={`Remove line ${index + 1}`}
                             >
                                 Remove
                             </button>
                         </div>
                     ))}
 
-                    <button type="button" onClick={addLine}>
-                        Add ingredient
-                    </button>
+                    <div className="form__line">
+                        <button
+                            type="button"
+                            className="btn btn-primary form__add-line"
+                            onClick={addLine}
+                        >
+                            Add ingredient
+                        </button>
+                    </div>
                 </fieldset>
-
-                <button type="submit">Save</button>
+                <div className="button-container">
+                    {isEdit && (
+                        <button
+                            type="button"
+                            className="btn btn-delete"
+                            onClick={handleDelete}
+                        >
+                            Delete
+                        </button>
+                    )}
+                    <button type="submit" className="btn btn-secondary">
+                        Save
+                    </button>
+                </div>
             </form>
-
-            {isEdit && (
-                <button type="button" onClick={handleDelete}>
-                    Delete
-                </button>
-            )}
 
             {error && <p role="alert">{error}</p>}
 

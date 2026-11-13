@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router';
+import './App.css';
 import HomePage from './features/home/HomePage';
 import Navigation from './components/Navigation';
 import IngredientPage from './features/ingredients/IngredientPage';
@@ -8,9 +9,9 @@ import RecipeForm from './features/recipes/RecipeForm';
 
 export default function App() {
     return (
-        <>
+        <div className="site">
             <Navigation />
-            <main>
+            <main className="main">
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/ingredients" element={<IngredientPage />}>
@@ -36,6 +37,6 @@ export default function App() {
                     <Route path="*" element={<p>Page not found</p>} />
                 </Routes>
             </main>
-        </>
+        </div>
     );
 }

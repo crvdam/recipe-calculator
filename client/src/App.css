@@ -1,0 +1,10 @@
+.site {
+    background-color: var(--clr-bg);
+    min-height: 100vh;
+}
+
+.main {
+    padding-top: 5rem;
+    max-width: var(--main-width);
+    margin: auto;
+}
