@@ -177,129 +177,129 @@ function RecipeForm() {
     return (
         <>
             <div className="detail-layout__middle">
-            <form className="form" onSubmit={handleSubmit}>
-                <label className="form__field">
-                    Name
-                    <input
-                        name="name"
-                        required
-                        value={form.name}
-                        onChange={handleChange}
-                    />
-                </label>
+                <form className="form" onSubmit={handleSubmit}>
+                    <label className="form__field">
+                        Name
+                        <input
+                            name="name"
+                            required
+                            value={form.name}
+                            onChange={handleChange}
+                        />
+                    </label>
 
-                <label className="form__field">
-                    Portions
-                    <input
-                        name="portions"
-                        type="number"
-                        min="1"
-                        step="1"
-                        value={form.portions}
-                        onChange={handleChange}
-                    />
-                </label>
+                    <label className="form__field">
+                        Portions
+                        <input
+                            name="portions"
+                            type="number"
+                            min="1"
+                            step="1"
+                            value={form.portions}
+                            onChange={handleChange}
+                        />
+                    </label>
 
-                <fieldset>
-                    <legend className="visually-hidden">Ingredients</legend>
+                    <fieldset>
+                        <legend className="visually-hidden">Ingredients</legend>
 
-                    {form.recipeLines.length > 0 && (
-                        <div
-                            className="form__line form__line--header"
-                            aria-hidden="true"
-                        >
-                            <span>Ingredient</span>
-                            <span>Quantity</span>
-                        </div>
-                    )}
+                        {form.recipeLines.length > 0 && (
+                            <div
+                                className="form__line form__line--header"
+                                aria-hidden="true"
+                            >
+                                <span>Ingredient</span>
+                                <span>Quantity</span>
+                            </div>
+                        )}
 
-                    {form.recipeLines.map((line, index) => (
-                        <div key={line.key} className="form__line">
-                            <label className="form__field">
-                                <span className="visually-hidden">
-                                    Ingredient, line {index + 1}
-                                </span>
-                                <select
-                                    required
-                                    value={line.ingredientId}
-                                    onChange={(event) =>
-                                        updateLine(
-                                            line.key,
-                                            'ingredientId',
-                                            event.target.value,
-                                        )
-                                    }
+                        {form.recipeLines.map((line, index) => (
+                            <div key={line.key} className="form__line">
+                                <label className="form__field">
+                                    <span className="visually-hidden">
+                                        Ingredient, line {index + 1}
+                                    </span>
+                                    <select
+                                        required
+                                        value={line.ingredientId}
+                                        onChange={(event) =>
+                                            updateLine(
+                                                line.key,
+                                                'ingredientId',
+                                                event.target.value,
+                                            )
+                                        }
+                                    >
+                                        <option value="">Choose…</option>
+                                        {ingredients.map((ingredient) => (
+                                            <option
+                                                key={ingredient.id}
+                                                value={ingredient.id}
+                                            >
+                                                {ingredient.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+
+                                <label className="form__field">
+                                    <span className="visually-hidden">
+                                        Quantity, line {index + 1}
+                                    </span>
+                                    <input
+                                        type="number"
+                                        required
+                                        min="0.01"
+                                        step="0.01"
+                                        value={line.quantity}
+                                        onChange={(event) =>
+                                            updateLine(
+                                                line.key,
+                                                'quantity',
+                                                event.target.value,
+                                            )
+                                        }
+                                    />
+                                </label>
+
+                                <button
+                                    type="button"
+                                    className="btn btn-delete"
+                                    onClick={() => removeLine(line.key)}
+                                    aria-label={`Remove line ${index + 1}`}
                                 >
-                                    <option value="">Choose…</option>
-                                    {ingredients.map((ingredient) => (
-                                        <option
-                                            key={ingredient.id}
-                                            value={ingredient.id}
-                                        >
-                                            {ingredient.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </label>
+                                    Remove
+                                </button>
+                            </div>
+                        ))}
 
-                            <label className="form__field">
-                                <span className="visually-hidden">
-                                    Quantity, line {index + 1}
-                                </span>
-                                <input
-                                    type="number"
-                                    required
-                                    min="0.01"
-                                    step="0.01"
-                                    value={line.quantity}
-                                    onChange={(event) =>
-                                        updateLine(
-                                            line.key,
-                                            'quantity',
-                                            event.target.value,
-                                        )
-                                    }
-                                />
-                            </label>
-
+                        <div className="form__line">
+                            <button
+                                type="button"
+                                className="btn btn-primary form__add-line"
+                                onClick={addLine}
+                            >
+                                Add ingredient
+                            </button>
+                        </div>
+                    </fieldset>
+                    <div className="button-container">
+                        {isEdit && (
                             <button
                                 type="button"
                                 className="btn btn-delete"
-                                onClick={() => removeLine(line.key)}
-                                aria-label={`Remove line ${index + 1}`}
+                                onClick={handleDelete}
                             >
-                                Remove
+                                Delete
                             </button>
-                        </div>
-                    ))}
-
-                    <div className="form__line">
-                        <button
-                            type="button"
-                            className="btn btn-primary form__add-line"
-                            onClick={addLine}
-                        >
-                            Add ingredient
+                        )}
+                        <button type="submit" className="btn btn-secondary">
+                            Save
                         </button>
                     </div>
-                </fieldset>
-                <div className="button-container">
-                    {isEdit && (
-                        <button
-                            type="button"
-                            className="btn btn-delete"
-                            onClick={handleDelete}
-                        >
-                            Delete
-                        </button>
-                    )}
-                    <button type="submit" className="btn btn-secondary">
-                        Save
-                    </button>
-                </div>
-            </form>
+                </form>
 
-            {error && <p role="alert">{error}</p>}
+                {error && <p role="alert">{error}</p>}
             </div>
 
             <aside className="detail-layout__right">

@@ -142,85 +142,85 @@ function IngredientForm() {
     return (
         <>
             <div className="detail-layout__middle">
-            <form className="form" onSubmit={handleSubmit}>
-                <label className="form__field">
-                    Name
-                    <input
-                        name="name"
-                        required
-                        value={form.name}
-                        onChange={handleChange}
-                    />
-                </label>
+                <form className="form" onSubmit={handleSubmit}>
+                    <label className="form__field">
+                        Name
+                        <input
+                            name="name"
+                            required
+                            value={form.name}
+                            onChange={handleChange}
+                        />
+                    </label>
 
-                <label className="form__field">
-                    Base unit
-                    <select
-                        name="baseUnit"
-                        value={form.baseUnit}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="Gram">Gram</option>
-                        <option value="Millilitre">Millilitre</option>
-                        <option value="Piece">Piece</option>
-                    </select>
-                </label>
-
-                <label className="form__field">
-                    Purchase price (€)
-                    <input
-                        name="purchasePrice"
-                        type="number"
-                        min="0.01"
-                        step="0.01"
-                        value={form.purchasePrice}
-                        onChange={handleChange}
-                    />
-                </label>
-
-                <label className="form__field">
-                    Quantity ({form.baseUnit})
-                    <input
-                        name="purchaseQuantity"
-                        type="number"
-                        min="0.01"
-                        step="0.01"
-                        value={form.purchaseQuantity}
-                        onChange={handleChange}
-                    />
-                </label>
-
-                <label className="form__field">
-                    Yield (%)
-                    <input
-                        name="yieldPercentage"
-                        type="number"
-                        min="1"
-                        max="100"
-                        step="1"
-                        value={form.yieldPercentage}
-                        onChange={handleChange}
-                    />
-                </label>
-
-                <div className="button-container">
-                    {isEdit && (
-                        <button
-                            type="button"
-                            className="btn btn-delete"
-                            onClick={handleDelete}
+                    <label className="form__field">
+                        Base unit
+                        <select
+                            name="baseUnit"
+                            value={form.baseUnit}
+                            onChange={handleChange}
+                            required
                         >
-                            Delete
-                        </button>
-                    )}
-                    <button type="submit" className="btn btn-secondary">
-                        Save
-                    </button>
-                </div>
-            </form>
+                            <option value="Gram">Gram</option>
+                            <option value="Millilitre">Millilitre</option>
+                            <option value="Piece">Piece</option>
+                        </select>
+                    </label>
 
-            {error && <p role="alert">{error}</p>}
+                    <label className="form__field">
+                        Purchase price (€)
+                        <input
+                            name="purchasePrice"
+                            type="number"
+                            min="0.01"
+                            step="0.01"
+                            value={form.purchasePrice}
+                            onChange={handleChange}
+                        />
+                    </label>
+
+                    <label className="form__field">
+                        Quantity ({form.baseUnit})
+                        <input
+                            name="purchaseQuantity"
+                            type="number"
+                            min="0.01"
+                            step="0.01"
+                            value={form.purchaseQuantity}
+                            onChange={handleChange}
+                        />
+                    </label>
+
+                    <label className="form__field">
+                        Yield (%)
+                        <input
+                            name="yieldPercentage"
+                            type="number"
+                            min="1"
+                            max="100"
+                            step="1"
+                            value={form.yieldPercentage}
+                            onChange={handleChange}
+                        />
+                    </label>
+
+                    <div className="button-container">
+                        {isEdit && (
+                            <button
+                                type="button"
+                                className="btn btn-delete"
+                                onClick={handleDelete}
+                            >
+                                Delete
+                            </button>
+                        )}
+                        <button type="submit" className="btn btn-secondary">
+                            Save
+                        </button>
+                    </div>
+                </form>
+
+                {error && <p role="alert">{error}</p>}
             </div>
 
             <aside className="detail-layout__right">

@@ -240,6 +240,7 @@
 .item-list__item {
     height: 2.5rem;
     padding: 0 0.75rem;
+    border-radius: var(--border-radius-button);
 
     a {
         display: flex;
