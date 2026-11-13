@@ -176,6 +176,7 @@ function RecipeForm() {
 
     return (
         <>
+            <div className="detail-layout__middle">
             <form className="form" onSubmit={handleSubmit}>
                 <label className="form__field">
                     Name
@@ -299,13 +300,16 @@ function RecipeForm() {
             </form>
 
             {error && <p role="alert">{error}</p>}
+            </div>
 
-            {recipe && (
-                <>
-                    <p>Total cost {recipe.totalCost ?? '–'}</p>
-                    <p>Cost per portion {recipe.costPerPortion ?? '–'}</p>
-                </>
-            )}
+            <aside className="detail-layout__right">
+                {recipe && (
+                    <>
+                        <p>Total cost {recipe.totalCost ?? '–'}</p>
+                        <p>Cost per portion {recipe.costPerPortion ?? '–'}</p>
+                    </>
+                )}
+            </aside>
         </>
     );
 }

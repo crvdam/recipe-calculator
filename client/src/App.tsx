@@ -18,7 +18,9 @@ export default function App() {
                         <Route
                             index
                             element={
-                                <p>Select an ingredient or create a new one.</p>
+                                <p className="detail-layout__middle">
+                                    Select an ingredient or create a new one.
+                                </p>
                             }
                         />
                         <Route path="new" element={<IngredientForm />} />
@@ -28,7 +30,9 @@ export default function App() {
                         <Route
                             index
                             element={
-                                <p>Select an recipe or create a new one.</p>
+                                <p className="detail-layout__middle">
+                                    Select a recipe or create a new one.
+                                </p>
                             }
                         />
                         <Route path="new" element={<RecipeForm />} />

@@ -43,11 +43,7 @@ export default function IngredientPage() {
                     </ul>
                 </div>
 
-                <div className="detail-layout__middle">
-                    <Outlet context={{ reload }} />
-                </div>
-
-                <div className="detail-layout__right"></div>
+                <Outlet context={{ reload }} />
             </div>
         </>
     );

@@ -141,6 +141,7 @@ function IngredientForm() {
 
     return (
         <>
+            <div className="detail-layout__middle">
             <form className="form" onSubmit={handleSubmit}>
                 <label className="form__field">
                     Name
@@ -220,13 +221,16 @@ function IngredientForm() {
             </form>
 
             {error && <p role="alert">{error}</p>}
+            </div>
 
-            {ingredient && (
-                <p>
-                    Cost per {ingredient.baseUnit.toLowerCase()}:{' '}
-                    {ingredient.costPerBaseUnit ?? '–'}
-                </p>
-            )}
+            <aside className="detail-layout__right">
+                {ingredient && (
+                    <p>
+                        Cost per {ingredient.baseUnit.toLowerCase()}:{' '}
+                        {ingredient.costPerBaseUnit ?? '–'}
+                    </p>
+                )}
+            </aside>
         </>
     );
 }
