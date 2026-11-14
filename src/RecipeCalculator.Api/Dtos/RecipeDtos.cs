@@ -35,4 +35,16 @@ public record RecipeRequest(
     List<RecipeLineRequest> RecipeLines,
     [Range(0, 1000000.0, MinimumIsExclusive = true)] decimal? OutputQuantity,
     Unit? OutputUnit
-);
+) : IValidatableObject 
+{
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (OutputQuantity is null != OutputUnit is null)
+        {
+            yield return new ValidationResult(
+                "Output quantity and output unit must be provided together.",
+                [nameof(OutputQuantity), nameof(OutputUnit)]
+            );
+        }
+    }
+}
