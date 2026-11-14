@@ -1,10 +1,10 @@
 :root {
     --clr-bg: #fdfdfd;
     --clr-text: #1e232f;
-    --clr-text-muted: #0640b4;
+    --clr-text-muted: #77797d;
     --clr-primary: #ff5733;
     --clr-secondary: #0959fd;
-    --clr-border: #1e232f2e;
+    --clr-border: #1e232f26;
     --main-width: 1200px;
     --border-radius-button: 5px;
     --border-radius: 15px;
@@ -23,6 +23,7 @@
     h1 {
         font-size: 3rem;
         font-weight: 700;
+        text-align: right;
     }
 
     h2 {
@@ -192,7 +193,7 @@
     }
 
     .form__line {
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 1rem;
@@ -258,6 +259,7 @@
     a {
         display: flex;
         align-items: center;
+        font-weight: 700;
     }
 }
 
