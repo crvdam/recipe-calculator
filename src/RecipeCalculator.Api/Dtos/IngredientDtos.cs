@@ -31,4 +31,16 @@ public record IngredientRequest(
     [Range(0, 1000000.0, MinimumIsExclusive = true)] decimal? PurchasePrice,
     [Range(0, 1000000.0, MinimumIsExclusive = true)] decimal? PurchaseQuantity,
     [Range(1, 100)] int? YieldPercentage
-);
+) : IValidatableObject 
+{
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (PurchaseQuantity is null != PurchasePrice is null)
+        {
+            yield return new ValidationResult(
+                "Purchase quantity and purchase price must be provided together.",
+                [nameof(PurchaseQuantity), nameof(PurchasePrice)]
+            );
+        }
+    }
+}
