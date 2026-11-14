@@ -12,6 +12,8 @@ function toFormState(recipe: RecipeResponse): RecipeFormState {
             ingredientId: line.ingredientId.toString(),
             quantity: line.quantity.toString(),
         })),
+        outputQuantity: recipe.outputQuantity?.toString() ?? '',
+        outputUnit: recipe.outputUnit ?? '',
     };
 }
 
@@ -23,6 +25,8 @@ function RecipeForm() {
         name: '',
         portions: '1',
         recipeLines: [],
+        outputQuantity: '',
+        outputUnit: '',
     });
     const [recipe, setRecipe] = useState<RecipeResponse | null>(null);
     const isEdit = id !== undefined;
@@ -122,6 +126,9 @@ function RecipeForm() {
                 ingredientId: Number(line.ingredientId),
                 quantity: Number(line.quantity),
             })),
+            outputQuantity:
+                form.outputQuantity === '' ? null : Number(form.outputQuantity),
+            outputUnit: form.outputUnit === '' ? null : form.outputUnit,
         };
 
         const response = await fetch(
@@ -198,6 +205,32 @@ function RecipeForm() {
                             value={form.portions}
                             onChange={handleChange}
                         />
+                    </label>
+
+                    <label className="form__field">
+                        <span className="form__label">Output quantity</span>
+                        <input
+                            name="outputQuantity"
+                            type="number"
+                            min="0.01"
+                            step="0.01"
+                            value={form.outputQuantity}
+                            onChange={handleChange}
+                        />
+                    </label>
+
+                    <label className="form__field">
+                        <span className="form__label">Output unit</span>
+                        <select
+                            name="outputUnit"
+                            value={form.outputUnit}
+                            onChange={handleChange}
+                        >
+                            <option value="">—</option>
+                            <option value="Gram">Gram</option>
+                            <option value="Millilitre">Millilitre</option>
+                            <option value="Piece">Piece</option>
+                        </select>
                     </label>
 
                     <fieldset>
@@ -307,6 +340,13 @@ function RecipeForm() {
                     <>
                         <p>Total cost {recipe.totalCost ?? '–'}</p>
                         <p>Cost per portion {recipe.costPerPortion ?? '–'}</p>
+
+                        {recipe.outputUnit && (
+                            <p>
+                                Cost per {recipe.outputUnit.toLowerCase()}{' '}
+                                {recipe.costPerOutputUnit ?? '–'}
+                            </p>
+                        )}
                     </>
                 )}
             </aside>

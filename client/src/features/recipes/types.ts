@@ -1,7 +1,11 @@
+import type { Unit } from '../ingredients/types';
+
 export type RecipeFormState = {
     name: string;
     portions: string;
     recipeLines: RecipeLineFormState[];
+    outputQuantity: string;
+    outputUnit: Unit | '';
 };
 
 export type RecipeLineFormState = {
@@ -14,6 +18,8 @@ export type RecipeRequest = {
     name: string;
     portions: number;
     recipeLines: RecipeLineRequest[];
+    outputQuantity: number | null;
+    outputUnit: Unit | null;
 };
 
 export type RecipeLineRequest = {
@@ -28,6 +34,9 @@ export type RecipeResponse = {
     recipeLines: RecipeLineResponse[];
     totalCost: number | null;
     costPerPortion: number | null;
+    outputQuantity: number | null;
+    outputUnit: Unit | null;
+    costPerOutputUnit: number | null;
 };
 
 export type RecipeLineResponse = {
