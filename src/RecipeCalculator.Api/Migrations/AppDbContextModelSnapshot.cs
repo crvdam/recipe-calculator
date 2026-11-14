@@ -55,6 +55,13 @@ namespace RecipeCalculator.Api.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<decimal?>("OutputQuantity")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("OutputUnit")
+                        .HasColumnType("INTEGER");
+
                     b.Property<decimal>("Portions")
                         .HasPrecision(10, 2)
                         .HasColumnType("TEXT");

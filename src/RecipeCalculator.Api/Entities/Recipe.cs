@@ -12,6 +12,11 @@ public class Recipe
 
     public List<RecipeLine> RecipeLines { get; set; } = [];
 
+    [Precision(10, 2)]
+    public decimal? OutputQuantity { get; set; }
+
+    public Unit? OutputUnit { get; set; }
+
     public decimal? TotalCost
     {
         get
@@ -26,4 +31,6 @@ public class Recipe
     }
 
     public decimal? CostPerPortion => Portions is > 0 ? TotalCost / Portions : null;
+
+    public decimal? CostPerOutputUnit => OutputQuantity is > 0 ? TotalCost / OutputQuantity : null;
 }
