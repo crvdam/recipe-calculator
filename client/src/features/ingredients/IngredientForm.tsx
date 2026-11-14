@@ -144,7 +144,7 @@ function IngredientForm() {
             <div className="detail-layout__middle">
                 <form className="form" onSubmit={handleSubmit}>
                     <label className="form__field">
-                        Name
+                        <span className="form__label">Name</span>
                         <input
                             name="name"
                             required
@@ -154,7 +154,7 @@ function IngredientForm() {
                     </label>
 
                     <label className="form__field">
-                        Base unit
+                        <span className="form__label">Base unit</span>
                         <select
                             name="baseUnit"
                             value={form.baseUnit}
@@ -168,7 +168,7 @@ function IngredientForm() {
                     </label>
 
                     <label className="form__field">
-                        Purchase price (€)
+                        <span className="form__label">Purchase price (€)</span>
                         <input
                             name="purchasePrice"
                             type="number"
@@ -180,7 +180,7 @@ function IngredientForm() {
                     </label>
 
                     <label className="form__field">
-                        Quantity ({form.baseUnit})
+                        <span className="form__label">Quantity ({form.baseUnit})</span>
                         <input
                             name="purchaseQuantity"
                             type="number"
@@ -192,7 +192,7 @@ function IngredientForm() {
                     </label>
 
                     <label className="form__field">
-                        Yield (%)
+                        <span className="form__label">Yield (%)</span>
                         <input
                             name="yieldPercentage"
                             type="number"

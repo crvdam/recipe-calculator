@@ -179,7 +179,7 @@ function RecipeForm() {
             <div className="detail-layout__middle">
                 <form className="form" onSubmit={handleSubmit}>
                     <label className="form__field">
-                        Name
+                        <span className="form__label">Name</span>
                         <input
                             name="name"
                             required
@@ -189,7 +189,7 @@ function RecipeForm() {
                     </label>
 
                     <label className="form__field">
-                        Portions
+                        <span className="form__label">Portions</span>
                         <input
                             name="portions"
                             type="number"
@@ -208,8 +208,8 @@ function RecipeForm() {
                                 className="form__line form__line--header"
                                 aria-hidden="true"
                             >
-                                <span>Ingredient</span>
-                                <span>Quantity</span>
+                                <span className="form__label">Ingredient</span>
+                                <span className="form__label">Quantity</span>
                             </div>
                         )}
 

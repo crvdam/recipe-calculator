@@ -17,9 +17,48 @@
 }
 
 .navigation__list {
+    font-size: 1.25rem;
+    font-weight: 400;
     display: flex;
     gap: 2rem;
     justify-content: center;
     align-items: center;
     height: 5rem;
+}
+
+.navigation__list a {
+    /* Column so the hidden bold copy below can reserve the width */
+    display: inline-flex;
+    flex-direction: column;
+
+    /* Underline drawn as a background, grown from 0 to full width on hover */
+    padding-bottom: 0.2em;
+    background: linear-gradient(currentColor, currentColor) no-repeat left
+        bottom / 0 2px;
+    transition: background-size 200ms ease;
+}
+
+/* Invisible bold copy of the text: every link is as wide as its bold
+   version, so neighbours don't shift when the active page turns bold */
+.navigation__list a::after {
+    content: attr(data-text);
+    font-weight: 700;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+.navigation__list a:hover,
+.navigation__list a:focus-visible {
+    background-size: 100% 2px;
+}
+
+.navigation__list a[aria-current='page'] {
+    font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .navigation__list a {
+        transition: none;
+    }
 }

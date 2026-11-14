@@ -8,13 +8,19 @@ export default function Navigation() {
                 <p className="navigation__logo">Foodcost Calculator</p>
                 <ul className="navigation__list">
                     <li>
-                        <NavLink to="/">Home</NavLink>
+                        <NavLink to="/" data-text="Home">
+                            Home
+                        </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/ingredients">Ingredients</NavLink>
+                        <NavLink to="/ingredients" data-text="Ingredients">
+                            Ingredients
+                        </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/recipes">Recipes</NavLink>
+                        <NavLink to="/recipes" data-text="Recipes">
+                            Recipes
+                        </NavLink>
                     </li>
                 </ul>
             </nav>
