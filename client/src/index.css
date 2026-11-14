@@ -85,6 +85,7 @@
         height: 3rem;
         font-family: inherit;
         font-size: inherit;
+        min-width: 10rem;
     }
 
     .btn-primary {
@@ -113,6 +114,10 @@
         &:hover {
             background: color-mix(in oklab, var(--clr-bg), black 5%);
         }
+    }
+
+    .btn-font-awesome {
+        min-width: unset;
     }
 }
 
@@ -173,10 +178,6 @@
         gap: 1rem;
     }
 
-    button {
-        min-width: 8rem;
-    }
-
     button[type='submit'] {
         width: 8rem;
     }
@@ -199,10 +200,10 @@
     }
 
     .form__line {
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.5rem;
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 1rem;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+        gap: 0.25rem;
         align-items: end;
 
         input,

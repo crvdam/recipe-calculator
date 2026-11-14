@@ -2,6 +2,8 @@ import { useNavigate, useOutletContext, useParams } from 'react-router';
 import type { RecipeRequest, RecipeFormState, RecipeResponse } from './types';
 import type { IngredientResponse } from '../ingredients/types';
 import { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 function toFormState(recipe: RecipeResponse): RecipeFormState {
     return {
@@ -297,11 +299,11 @@ function RecipeForm() {
 
                                 <button
                                     type="button"
-                                    className="btn btn-delete"
+                                    className="btn btn-delete btn-font-awesome"
                                     onClick={() => removeLine(line.key)}
                                     aria-label={`Remove line ${index + 1}`}
                                 >
-                                    Remove
+                                    <FontAwesomeIcon icon={faXmark} />
                                 </button>
                             </div>
                         ))}
