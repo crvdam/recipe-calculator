@@ -1,6 +1,6 @@
 .header {
     background: var(--clr-header);
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--box-shadow);
 }
 
 .navigation {
@@ -28,19 +28,14 @@
 }
 
 .navigation__list a {
-    /* Column so the hidden bold copy below can reserve the width */
     display: inline-flex;
     flex-direction: column;
-
-    /* Underline drawn as a background, grown from 0 to full width on hover */
     padding-bottom: 0.2em;
     background: linear-gradient(currentColor, currentColor) no-repeat left
         bottom / 0 2px;
     transition: background-size 200ms ease;
 }
 
-/* Invisible bold copy of the text: every link is as wide as its bold
-   version, so neighbours don't shift when the active page turns bold */
 .navigation__list a::after {
     content: attr(data-text);
     font-weight: 700;

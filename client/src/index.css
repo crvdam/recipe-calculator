@@ -10,7 +10,7 @@
     --main-width: 1200px;
     --border-radius-button: 5px;
     --border-radius: 15px;
-    --surface-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05);
+    --box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05);
 
     body {
         font-family: 'Figtree', system-ui, sans-serif;
@@ -290,7 +290,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: var(--surface-box-shadow);
+    box-shadow: var(--box-shadow);
 
     .item-list {
         flex-grow: 1;
@@ -310,7 +310,7 @@
     background: var(--clr-bg-surface);
     border: 1px solid var(--clr-border);
     border-radius: var(--border-radius);
-    box-shadow: var(--surface-box-shadow);
+    box-shadow: var(--box-shadow);
 }
 
 .detail-layout__right {
@@ -318,5 +318,5 @@
     background: var(--clr-bg-surface);
     border: 1px solid var(--clr-border);
     border-radius: var(--border-radius);
-    box-shadow: var(--surface-box-shadow);
+    box-shadow: var(--box-shadow);
 }

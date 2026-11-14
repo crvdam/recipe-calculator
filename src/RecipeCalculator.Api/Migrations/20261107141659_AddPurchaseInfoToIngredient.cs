@@ -38,7 +38,7 @@ namespace RecipeCalculator.Api.Migrations
                 table: "Ingredients",
                 type: "INTEGER",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: 100);
         }
 
         /// <inheritdoc />
