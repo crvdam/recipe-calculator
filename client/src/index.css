@@ -151,7 +151,7 @@
     }
 
     .form__field:has(:focus-visible) .form__label {
-        color: var(--clr-primary);
+        color: var(--clr-secondary);
     }
 
     input,
