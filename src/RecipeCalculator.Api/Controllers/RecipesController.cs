@@ -64,6 +64,8 @@ public class RecipesController(AppDbContext db) : ControllerBase
                     Quantity = line.Quantity,
                 })
                 .ToList(),
+            OutputQuantity = request.OutputQuantity,
+            OutputUnit = request.OutputUnit,
         };
 
         db.Add(recipe);
@@ -123,6 +125,8 @@ public class RecipesController(AppDbContext db) : ControllerBase
 
         existing.Name = request.Name;
         existing.Portions = request.Portions;
+        existing.OutputQuantity = request.OutputQuantity;
+        existing.OutputUnit = request.OutputUnit;
 
         existing.RecipeLines.Clear();
         foreach (var line in request.RecipeLines)

@@ -9,7 +9,10 @@ public record RecipeResponse(
     decimal Portions,
     List<RecipeLineResponse> RecipeLines,
     decimal? TotalCost,
-    decimal? CostPerPortion
+    decimal? CostPerPortion,
+    decimal? OutputQuantity,
+    Unit? OutputUnit,
+    decimal? CostPerOutputUnit
 )
 {
     public static RecipeResponse From(Recipe recipe) =>
@@ -19,12 +22,17 @@ public record RecipeResponse(
             recipe.Portions,
             recipe.RecipeLines.Select(RecipeLineResponse.From).ToList(),
             recipe.TotalCost,
-            recipe.CostPerPortion
+            recipe.CostPerPortion,
+            recipe.OutputQuantity,
+            recipe.OutputUnit,
+            recipe.CostPerOutputUnit
         );
 }
 
 public record RecipeRequest(
     [Required, StringLength(200)] string Name,
     [Range(0, 1000.0, MinimumIsExclusive = true)] decimal Portions,
-    List<RecipeLineRequest> RecipeLines
+    List<RecipeLineRequest> RecipeLines,
+    [Range(0, 1000000.0, MinimumIsExclusive = true)] decimal? OutputQuantity,
+    Unit? OutputUnit
 );
