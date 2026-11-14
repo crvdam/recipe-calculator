@@ -1,5 +1,7 @@
 :root {
     --clr-bg: #fdfdfd;
+    --clr-bg-surface: #fdfdfd;
+    --clr-header: #fdfdfd;
     --clr-text: #1e232f;
     --clr-text-muted: #77797d;
     --clr-primary: #ff5733;
@@ -8,10 +10,12 @@
     --main-width: 1200px;
     --border-radius-button: 5px;
     --border-radius: 15px;
+    --surface-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05);
 
     body {
         font-family: 'Figtree', system-ui, sans-serif;
         color: var(--clr-text);
+        margin: 0;
     }
 
     h1,
@@ -115,6 +119,8 @@
 @media (prefers-color-scheme: light) {
     :root {
         --clr-bg: #1e232f;
+        --clr-bg-surface: #262c3a;
+        --clr-header: #262c3a;
         --clr-text: #fdfdfd;
         --clr-text-muted: #c4c4c4;
         --clr-primary: #ff5733;
@@ -138,7 +144,7 @@
         color: var(--clr-text-muted);
         margin-bottom: -0.5rem;
         z-index: 1;
-        background: var(--clr-bg);
+        background: var(--clr-bg-surface);
         width: fit-content;
         padding: 0 0.25rem;
         margin-left: 0.25rem;
@@ -157,7 +163,7 @@
         font-size: inherit;
         border-radius: var(--border-radius-button);
         border: 1px solid var(--clr-border);
-        background: var(--clr-bg);
+        background: var(--clr-bg-surface);
     }
 
     .button-container {
@@ -278,11 +284,13 @@
 
 .detail-layout__left {
     padding: 1rem;
+    background: var(--clr-bg-surface);
     border: 1px solid var(--clr-border);
     border-radius: var(--border-radius);
     display: flex;
     flex-direction: column;
     align-items: center;
+    box-shadow: var(--surface-box-shadow);
 
     .item-list {
         flex-grow: 1;
@@ -299,12 +307,16 @@
     flex-direction: column;
     padding: 1rem;
     margin: 0;
+    background: var(--clr-bg-surface);
     border: 1px solid var(--clr-border);
     border-radius: var(--border-radius);
+    box-shadow: var(--surface-box-shadow);
 }
 
 .detail-layout__right {
     padding: 1rem;
+    background: var(--clr-bg-surface);
     border: 1px solid var(--clr-border);
     border-radius: var(--border-radius);
+    box-shadow: var(--surface-box-shadow);
 }
