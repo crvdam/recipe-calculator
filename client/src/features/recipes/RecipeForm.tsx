@@ -464,6 +464,14 @@ function RecipeForm() {
             <aside className="detail-layout__right">
                 {recipe && (
                     <>
+                        <ul>
+                            {recipe.recipeLines.map((line) => (
+                                <li key={line.id}>
+                                    {line.name}: {line.lineCost}
+                                </li>
+                            ))}
+                        </ul>
+
                         <p>Total cost {recipe.totalCost ?? '–'}</p>
                         <p>Cost per portion {recipe.costPerPortion ?? '–'}</p>
 
