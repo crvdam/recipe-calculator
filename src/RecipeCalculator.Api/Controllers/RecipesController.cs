@@ -59,7 +59,7 @@ public class RecipesController(AppDbContext db) : ControllerBase
 
         if (existingCount != ingredientIds.Count)
         {
-            return BadRequest("One or more ingredients do not exist.");
+            return Problem(statusCode: 400, title: "One or more ingredients do not exist.");
         }
 
         var subRecipeIds = request
@@ -73,7 +73,10 @@ public class RecipesController(AppDbContext db) : ControllerBase
 
         if (existingSubRecipeCount != subRecipeIds.Count)
         {
-            return BadRequest("One or more sub-recipes do not exist or have no output quantity.");
+            return Problem(
+                statusCode: 400,
+                title: "One or more sub-recipes do not exist or have no output quantity."
+            );
         }
 
         var recipe = new Recipe
@@ -159,7 +162,7 @@ public class RecipesController(AppDbContext db) : ControllerBase
 
         if (existingIngredientCount != ingredientIds.Count)
         {
-            return BadRequest("One or more ingredients do not exist.");
+            return Problem(statusCode: 400, title: "One or more ingredients do not exist.");
         }
 
         var subRecipeIds = request
