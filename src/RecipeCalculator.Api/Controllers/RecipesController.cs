@@ -168,9 +168,12 @@ public class RecipesController(AppDbContext db) : ControllerBase
             .Distinct()
             .ToList();
 
-        if (subRecipeIds.Contains(id))
+        if (await WouldCreateCycle(id, subRecipeIds.OfType<int>().ToList()))
         {
-            return BadRequest("A recipe cannot use itself as a sub-recipe.");
+            return Problem(
+                statusCode: 400,
+                title: "One of these sub-recipes already uses this recipe, so it can't be added here."
+            );
         }
 
         var existingSubRecipeCount = await db.Recipes.CountAsync(subRecipe =>
@@ -179,7 +182,10 @@ public class RecipesController(AppDbContext db) : ControllerBase
 
         if (existingSubRecipeCount != subRecipeIds.Count)
         {
-            return BadRequest("One or more sub-recipes do not exist or have no output quantity.");
+            return Problem(
+                statusCode: 400,
+                title: "One or more sub-recipes do not exist or have no output quantity."
+            );
         }
 
         existing.Name = request.Name;
@@ -212,5 +218,38 @@ public class RecipesController(AppDbContext db) : ControllerBase
             .FirstAsync(recipe => recipe.Id == id);
 
         return Ok(RecipeResponse.From(updated));
+    }
+
+    private async Task<bool> WouldCreateCycle(int recipeId, List<int> subRecipeIds)
+    {
+        var toCheck = new Queue<int>(subRecipeIds);
+        var checkedIds = new HashSet<int>();
+
+        while (toCheck.Count > 0)
+        {
+            var current = toCheck.Dequeue();
+
+            if (current == recipeId)
+            {
+                return true;
+            }
+
+            if (!checkedIds.Add(current))
+            {
+                continue;
+            }
+
+            var nestedIds = await db
+                .RecipeLines.Where(line => line.RecipeId == current && line.SubRecipeId != null)
+                .Select(line => line.SubRecipeId!.Value)
+                .ToListAsync();
+
+            foreach (var nestedId in nestedIds)
+            {
+                toCheck.Enqueue(nestedId);
+            }
+        }
+
+        return false;
     }
 }
