@@ -16,6 +16,10 @@ public class RecipesController(AppDbContext db) : ControllerBase
         var recipes = await db
             .Recipes.Include(recipe => recipe.RecipeLines)
                 .ThenInclude(line => line.Ingredient)
+            .Include(recipe => recipe.RecipeLines)
+                .ThenInclude(line => line.SubRecipe)
+                    .ThenInclude(subRecipe => subRecipe!.RecipeLines)
+                        .ThenInclude(subLine => subLine.Ingredient)
             .ToListAsync();
 
         return Ok(recipes.Select(RecipeResponse.From).ToList());
@@ -27,6 +31,10 @@ public class RecipesController(AppDbContext db) : ControllerBase
         var recipe = await db
             .Recipes.Include(recipe => recipe.RecipeLines)
                 .ThenInclude(line => line.Ingredient)
+            .Include(recipe => recipe.RecipeLines)
+                .ThenInclude(line => line.SubRecipe)
+                    .ThenInclude(subRecipe => subRecipe!.RecipeLines)
+                        .ThenInclude(subLine => subLine.Ingredient)
             .FirstOrDefaultAsync(recipe => recipe.Id == id);
 
         if (recipe is null)
@@ -42,6 +50,7 @@ public class RecipesController(AppDbContext db) : ControllerBase
     {
         var ingredientIds = request
             .RecipeLines.Select(line => line.IngredientId)
+            .Where(id => id is not null)
             .Distinct()
             .ToList();
         var existingCount = await db.Ingredients.CountAsync(ingredient =>
@@ -53,6 +62,20 @@ public class RecipesController(AppDbContext db) : ControllerBase
             return BadRequest("One or more ingredients do not exist.");
         }
 
+        var subRecipeIds = request
+            .RecipeLines.Select(line => line.SubRecipeId)
+            .Where(id => id is not null)
+            .Distinct()
+            .ToList();
+        var existingSubRecipeCount = await db.Recipes.CountAsync(subRecipe =>
+            subRecipeIds.Contains(subRecipe.Id) && subRecipe.OutputQuantity != null
+        );
+
+        if (existingSubRecipeCount != subRecipeIds.Count)
+        {
+            return BadRequest("One or more sub-recipes do not exist or have no output quantity.");
+        }
+
         var recipe = new Recipe
         {
             Name = request.Name,
@@ -61,6 +84,7 @@ public class RecipesController(AppDbContext db) : ControllerBase
                 .RecipeLines.Select(line => new RecipeLine
                 {
                     IngredientId = line.IngredientId,
+                    SubRecipeId = line.SubRecipeId,
                     Quantity = line.Quantity,
                 })
                 .ToList(),
@@ -74,6 +98,10 @@ public class RecipesController(AppDbContext db) : ControllerBase
         var created = await db
             .Recipes.Include(recipe => recipe.RecipeLines)
                 .ThenInclude(line => line.Ingredient)
+            .Include(recipe => recipe.RecipeLines)
+                .ThenInclude(line => line.SubRecipe)
+                    .ThenInclude(subRecipe => subRecipe!.RecipeLines)
+                        .ThenInclude(subLine => subLine.Ingredient)
             .FirstAsync(saved => saved.Id == recipe.Id);
 
         return CreatedAtAction(
@@ -112,15 +140,36 @@ public class RecipesController(AppDbContext db) : ControllerBase
 
         var ingredientIds = request
             .RecipeLines.Select(line => line.IngredientId)
+            .Where(id => id is not null)
             .Distinct()
             .ToList();
-        var existingCount = await db.Ingredients.CountAsync(ingredient =>
+        var existingIngredientCount = await db.Ingredients.CountAsync(ingredient =>
             ingredientIds.Contains(ingredient.Id)
         );
 
-        if (existingCount != ingredientIds.Count)
+        if (existingIngredientCount != ingredientIds.Count)
         {
             return BadRequest("One or more ingredients do not exist.");
+        }
+
+        var subRecipeIds = request
+            .RecipeLines.Select(line => line.SubRecipeId)
+            .Where(id => id is not null)
+            .Distinct()
+            .ToList();
+
+        if (subRecipeIds.Contains(id))
+        {
+            return BadRequest("A recipe cannot use itself as a sub-recipe.");
+        }
+
+        var existingSubRecipeCount = await db.Recipes.CountAsync(subRecipe =>
+            subRecipeIds.Contains(subRecipe.Id) && subRecipe.OutputQuantity != null
+        );
+
+        if (existingSubRecipeCount != subRecipeIds.Count)
+        {
+            return BadRequest("One or more sub-recipes do not exist or have no output quantity.");
         }
 
         existing.Name = request.Name;
@@ -132,7 +181,12 @@ public class RecipesController(AppDbContext db) : ControllerBase
         foreach (var line in request.RecipeLines)
         {
             existing.RecipeLines.Add(
-                new RecipeLine { IngredientId = line.IngredientId, Quantity = line.Quantity }
+                new RecipeLine
+                {
+                    IngredientId = line.IngredientId,
+                    SubRecipeId = line.SubRecipeId,
+                    Quantity = line.Quantity,
+                }
             );
         }
 
@@ -141,6 +195,10 @@ public class RecipesController(AppDbContext db) : ControllerBase
         var updated = await db
             .Recipes.Include(recipe => recipe.RecipeLines)
                 .ThenInclude(line => line.Ingredient)
+            .Include(recipe => recipe.RecipeLines)
+                .ThenInclude(line => line.SubRecipe)
+                    .ThenInclude(subRecipe => subRecipe!.RecipeLines)
+                        .ThenInclude(subLine => subLine.Ingredient)
             .FirstAsync(recipe => recipe.Id == id);
 
         return Ok(RecipeResponse.From(updated));
