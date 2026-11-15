@@ -10,9 +10,13 @@ export type RecipeFormState = {
 
 export type RecipeLineFormState = {
     key: string;
+    type: RecipeLineType;
     ingredientId: string;
+    subRecipeId: string;
     quantity: string;
 };
+
+export type RecipeLineType = 'ingredient' | 'recipe';
 
 export type RecipeRequest = {
     name: string;
@@ -23,7 +27,8 @@ export type RecipeRequest = {
 };
 
 export type RecipeLineRequest = {
-    ingredientId: number;
+    ingredientId: number | null;
+    subRecipeId: number | null;
     quantity: number;
 };
 
@@ -41,8 +46,9 @@ export type RecipeResponse = {
 
 export type RecipeLineResponse = {
     id: number;
-    ingredientId: number;
-    ingredientName: string;
+    ingredientId: number | null;
+    subRecipeId: number | null;
+    name: string;
     quantity: number;
     lineCost: number | null;
 };

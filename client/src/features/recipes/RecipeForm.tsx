@@ -1,5 +1,10 @@
 import { useNavigate, useOutletContext, useParams } from 'react-router';
-import type { RecipeRequest, RecipeFormState, RecipeResponse } from './types';
+import type {
+    RecipeRequest,
+    RecipeFormState,
+    RecipeResponse,
+    RecipeLineType,
+} from './types';
 import type { IngredientResponse } from '../ingredients/types';
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,7 +16,9 @@ function toFormState(recipe: RecipeResponse): RecipeFormState {
         portions: recipe.portions.toString(),
         recipeLines: recipe.recipeLines.map((line) => ({
             key: crypto.randomUUID(),
-            ingredientId: line.ingredientId.toString(),
+            type: line.ingredientId ? 'ingredient' : 'recipe',
+            ingredientId: line.ingredientId?.toString() ?? '',
+            subRecipeId: line.subRecipeId?.toString() ?? '',
             quantity: line.quantity.toString(),
         })),
         outputQuantity: recipe.outputQuantity?.toString() ?? '',
@@ -30,10 +37,22 @@ function RecipeForm() {
         outputQuantity: '',
         outputUnit: '',
     });
+
     const [recipe, setRecipe] = useState<RecipeResponse | null>(null);
     const isEdit = id !== undefined;
     const [error, setError] = useState<string | null>(null);
+
     const [ingredients, setIngredients] = useState<IngredientResponse[]>([]);
+    const [recipes, setRecipes] = useState<RecipeResponse[]>([]);
+    const subRecipeOptions = recipes.filter(
+        (option) => option.outputQuantity !== null && option.id !== Number(id),
+    );
+    const ingredientLines = form.recipeLines.filter(
+        (line) => line.type === 'ingredient',
+    );
+    const subRecipeLines = form.recipeLines.filter(
+        (line) => line.type === 'recipe',
+    );
 
     useEffect(() => {
         if (id === undefined) return;
@@ -80,18 +99,36 @@ function RecipeForm() {
         };
     }, []);
 
+    useEffect(() => {
+        let ignore = false;
+        fetch('/api/recipes')
+            .then((response) => response.json())
+            .then((data: RecipeResponse[]) => {
+                if (!ignore) setRecipes(data);
+            });
+        return () => {
+            ignore = true;
+        };
+    }, []);
+
     const handleChange = (
         event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     ) => {
         setForm({ ...form, [event.target.name]: event.target.value });
     };
 
-    const addLine = () => {
+    const addLine = (type: RecipeLineType) => {
         setForm({
             ...form,
             recipeLines: [
                 ...form.recipeLines,
-                { key: crypto.randomUUID(), ingredientId: '', quantity: '' },
+                {
+                    key: crypto.randomUUID(),
+                    type: type,
+                    ingredientId: '',
+                    subRecipeId: '',
+                    quantity: '',
+                },
             ],
         });
     };
@@ -105,7 +142,7 @@ function RecipeForm() {
 
     const updateLine = (
         key: string,
-        field: 'ingredientId' | 'quantity',
+        field: 'ingredientId' | 'subRecipeId' | 'quantity',
         value: string,
     ) => {
         setForm({
@@ -125,7 +162,10 @@ function RecipeForm() {
             name: form.name,
             portions: Number(form.portions),
             recipeLines: form.recipeLines.map((line) => ({
-                ingredientId: Number(line.ingredientId),
+                ingredientId: line.ingredientId
+                    ? Number(line.ingredientId)
+                    : null,
+                subRecipeId: line.subRecipeId ? Number(line.subRecipeId) : null,
                 quantity: Number(line.quantity),
             })),
             outputQuantity:
@@ -238,7 +278,7 @@ function RecipeForm() {
                     <fieldset>
                         <legend className="visually-hidden">Ingredients</legend>
 
-                        {form.recipeLines.length > 0 && (
+                        {ingredientLines.length > 0 && (
                             <div
                                 className="form__line form__line--header"
                                 aria-hidden="true"
@@ -248,7 +288,7 @@ function RecipeForm() {
                             </div>
                         )}
 
-                        {form.recipeLines.map((line, index) => (
+                        {ingredientLines.map((line, index) => (
                             <div key={line.key} className="form__line">
                                 <label className="form__field">
                                     <span className="visually-hidden">
@@ -301,7 +341,7 @@ function RecipeForm() {
                                     type="button"
                                     className="btn btn-delete btn-font-awesome"
                                     onClick={() => removeLine(line.key)}
-                                    aria-label={`Remove line ${index + 1}`}
+                                    aria-label={`Remove ingredient line ${index + 1}`}
                                 >
                                     <FontAwesomeIcon icon={faXmark} />
                                 </button>
@@ -312,9 +352,93 @@ function RecipeForm() {
                             <button
                                 type="button"
                                 className="btn btn-primary form__add-line"
-                                onClick={addLine}
+                                onClick={() => addLine('ingredient')}
                             >
                                 Add ingredient
+                            </button>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend className="visually-hidden">Sub-recipes</legend>
+
+                        {subRecipeLines.length > 0 && (
+                            <div
+                                className="form__line form__line--header"
+                                aria-hidden="true"
+                            >
+                                <span className="form__label">Sub-recipe</span>
+                                <span className="form__label">Quantity</span>
+                            </div>
+                        )}
+
+                        {subRecipeLines.map((line, index) => (
+                            <div key={line.key} className="form__line">
+                                <label className="form__field">
+                                    <span className="visually-hidden">
+                                        Sub-recipe, line {index + 1}
+                                    </span>
+                                    <select
+                                        required
+                                        value={line.subRecipeId}
+                                        onChange={(event) =>
+                                            updateLine(
+                                                line.key,
+                                                'subRecipeId',
+                                                event.target.value,
+                                            )
+                                        }
+                                    >
+                                        <option value="">Choose…</option>
+                                        {subRecipeOptions.map((subRecipe) => (
+                                            <option
+                                                key={subRecipe.id}
+                                                value={subRecipe.id}
+                                            >
+                                                {subRecipe.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+
+                                <label className="form__field">
+                                    <span className="visually-hidden">
+                                        Quantity, line {index + 1}
+                                    </span>
+                                    <input
+                                        type="number"
+                                        required
+                                        min="0.01"
+                                        step="0.01"
+                                        value={line.quantity}
+                                        onChange={(event) =>
+                                            updateLine(
+                                                line.key,
+                                                'quantity',
+                                                event.target.value,
+                                            )
+                                        }
+                                    />
+                                </label>
+
+                                <button
+                                    type="button"
+                                    className="btn btn-delete btn-font-awesome"
+                                    onClick={() => removeLine(line.key)}
+                                    aria-label={`Remove sub-recipe line ${index + 1}`}
+                                >
+                                    <FontAwesomeIcon icon={faXmark} />
+                                </button>
+                            </div>
+                        ))}
+
+                        <div className="form__line">
+                            <button
+                                type="button"
+                                className="btn btn-primary form__add-line"
+                                onClick={() => addLine('recipe')}
+                            >
+                                Add sub-recipe
                             </button>
                         </div>
                     </fieldset>
