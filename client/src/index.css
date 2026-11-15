@@ -69,7 +69,7 @@
     }
 
     button:focus-visible {
-        outline: 2px solid var(--color-primary);
+        outline: 2px solid var(--clr-primary);
         outline-offset: 2px;
     }
 
@@ -118,6 +118,7 @@
 
     .btn-font-awesome {
         min-width: unset;
+        width: 3rem;
     }
 }
 
@@ -155,7 +156,7 @@
         margin-left: 0.25rem;
     }
 
-    .form__field:has(:focus-visible) .form__label {
+    .form__field:has(:focus) .form__label {
         color: var(--clr-secondary);
     }
 
@@ -169,6 +170,12 @@
         border-radius: var(--border-radius-button);
         border: 1px solid var(--clr-border);
         background: var(--clr-bg-surface);
+    }
+
+    input:focus,
+    select:focus {
+        outline: 2px solid var(--clr-secondary);
+        outline-offset: -1px;
     }
 
     .button-container {
@@ -188,7 +195,8 @@
     }
 
     .form__add-line {
-        grid-column: 3;
+        grid-column: 1 / -1;
+        justify-self: end;
     }
 
     fieldset {
@@ -202,7 +210,7 @@
     .form__line {
         margin-bottom: 0.5rem;
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 3rem;
         gap: 0.25rem;
         align-items: end;
 
@@ -215,6 +223,15 @@
     .form__line--header {
         margin-bottom: 0rem;
         color: var(--clr-text-muted);
+    }
+
+    fieldset:has(.form__line select:focus)
+        .form__line--header
+        .form__label:nth-child(1),
+    fieldset:has(.form__line input:focus)
+        .form__line--header
+        .form__label:nth-child(2) {
+        color: var(--clr-secondary);
     }
 
     input[type='number'] {
