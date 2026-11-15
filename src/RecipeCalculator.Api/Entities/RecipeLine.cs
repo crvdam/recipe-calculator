@@ -9,8 +9,11 @@ public class RecipeLine
 
     public Recipe Recipe { get; set; } = null!;
 
-    public int IngredientId { get; set; }
-    public Ingredient Ingredient { get; set; } = null!;
+    public int? IngredientId { get; set; }
+    public Ingredient? Ingredient { get; set; }
+
+    public int? SubRecipeId { get; set; }
+    public Recipe? SubRecipe { get; set; }
 
     [Precision(10, 2)]
     public decimal Quantity { get; set; }
@@ -19,7 +22,12 @@ public class RecipeLine
     {
         get
         {
-            if (Ingredient.YieldPercentage <= 0)
+            if (SubRecipe is not null)
+            {
+                return SubRecipe.CostPerOutputUnit * Quantity;
+            }
+      
+            if (Ingredient is null || Ingredient.YieldPercentage <= 0)
             {
                 return null;
             }

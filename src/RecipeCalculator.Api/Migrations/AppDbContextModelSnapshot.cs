@@ -77,7 +77,7 @@ namespace RecipeCalculator.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("IngredientId")
+                    b.Property<int?>("IngredientId")
                         .HasColumnType("INTEGER");
 
                     b.Property<decimal>("Quantity")
@@ -87,11 +87,16 @@ namespace RecipeCalculator.Api.Migrations
                     b.Property<int>("RecipeId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("SubRecipeId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("IngredientId");
 
                     b.HasIndex("RecipeId");
+
+                    b.HasIndex("SubRecipeId");
 
                     b.ToTable("RecipeLines");
                 });
@@ -101,8 +106,7 @@ namespace RecipeCalculator.Api.Migrations
                     b.HasOne("RecipeCalculator.Api.Entities.Ingredient", "Ingredient")
                         .WithMany()
                         .HasForeignKey("IngredientId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("RecipeCalculator.Api.Entities.Recipe", "Recipe")
                         .WithMany("RecipeLines")
@@ -110,9 +114,16 @@ namespace RecipeCalculator.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("RecipeCalculator.Api.Entities.Recipe", "SubRecipe")
+                        .WithMany()
+                        .HasForeignKey("SubRecipeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Ingredient");
 
                     b.Navigation("Recipe");
+
+                    b.Navigation("SubRecipe");
                 });
 
             modelBuilder.Entity("RecipeCalculator.Api.Entities.Recipe", b =>

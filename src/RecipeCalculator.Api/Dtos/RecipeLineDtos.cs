@@ -5,14 +5,22 @@ namespace RecipeCalculator.Api.Dtos;
 
 public record RecipeLineResponse(
     int Id,
-    int IngredientId,
-    string IngredientName,
+    int? IngredientId,
+    int? SubRecipeId,
+    string Name,
     decimal Quantity,
     decimal? LineCost
 )
 {
     public static RecipeLineResponse From(RecipeLine line) =>
-        new(line.Id, line.IngredientId, line.Ingredient.Name, line.Quantity, line.LineCost);
+    new(
+        line.Id,
+        line.IngredientId,
+        line.SubRecipeId,
+        line.Ingredient?.Name ?? line.SubRecipe?.Name ?? "",
+        line.Quantity,
+        line.LineCost
+    );
 }
 
 public record RecipeLineRequest(

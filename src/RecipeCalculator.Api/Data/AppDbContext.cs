@@ -10,12 +10,26 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<RecipeLine> RecipeLines => Set<RecipeLine>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder
-            .Entity<RecipeLine>()
-            .HasOne(line => line.Ingredient)
-            .WithMany()
-            .HasForeignKey(line => line.IngredientId)
-            .OnDelete(DeleteBehavior.Restrict);
-    }
+{
+    modelBuilder
+        .Entity<RecipeLine>()
+        .HasOne(line => line.Recipe)
+        .WithMany(recipe => recipe.RecipeLines)
+        .HasForeignKey(line => line.RecipeId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+    modelBuilder
+        .Entity<RecipeLine>()
+        .HasOne(line => line.Ingredient)
+        .WithMany()
+        .HasForeignKey(line => line.IngredientId)
+        .OnDelete(DeleteBehavior.Restrict);
+
+    modelBuilder
+        .Entity<RecipeLine>()
+        .HasOne(line => line.SubRecipe)
+        .WithMany()
+        .HasForeignKey(line => line.SubRecipeId)
+        .OnDelete(DeleteBehavior.Restrict);
+}
 }
