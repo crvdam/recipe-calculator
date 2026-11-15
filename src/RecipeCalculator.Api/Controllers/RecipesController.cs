@@ -121,6 +121,16 @@ public class RecipesController(AppDbContext db) : ControllerBase
             return NotFound();
         }
 
+        var isUsedAsSubRecipe = await db.RecipeLines.AnyAsync(line => line.SubRecipeId == id);
+
+        if (isUsedAsSubRecipe)
+        {
+            return Problem(
+                statusCode: 409,
+                title: "Cannot delete a recipe that is used in another recipe."
+            );
+        }
+
         db.Remove(recipe);
         await db.SaveChangesAsync();
         return NoContent();
