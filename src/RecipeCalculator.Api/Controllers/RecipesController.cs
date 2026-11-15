@@ -13,14 +13,7 @@ public class RecipesController(AppDbContext db) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<RecipeResponse>>> GetAll()
     {
-        var recipes = await db
-            .Recipes.Include(recipe => recipe.RecipeLines)
-                .ThenInclude(line => line.Ingredient)
-            .Include(recipe => recipe.RecipeLines)
-                .ThenInclude(line => line.SubRecipe)
-                    .ThenInclude(subRecipe => subRecipe!.RecipeLines)
-                        .ThenInclude(subLine => subLine.Ingredient)
-            .ToListAsync();
+        var recipes = await LoadAllRecipes();
 
         return Ok(recipes.Select(RecipeResponse.From).ToList());
     }
@@ -28,14 +21,8 @@ public class RecipesController(AppDbContext db) : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<RecipeResponse>> GetById(int id)
     {
-        var recipe = await db
-            .Recipes.Include(recipe => recipe.RecipeLines)
-                .ThenInclude(line => line.Ingredient)
-            .Include(recipe => recipe.RecipeLines)
-                .ThenInclude(line => line.SubRecipe)
-                    .ThenInclude(subRecipe => subRecipe!.RecipeLines)
-                        .ThenInclude(subLine => subLine.Ingredient)
-            .FirstOrDefaultAsync(recipe => recipe.Id == id);
+        var recipes = await LoadAllRecipes();
+        var recipe = recipes.FirstOrDefault(recipe => recipe.Id == id);
 
         if (recipe is null)
         {
@@ -98,14 +85,8 @@ public class RecipesController(AppDbContext db) : ControllerBase
         db.Add(recipe);
         await db.SaveChangesAsync();
 
-        var created = await db
-            .Recipes.Include(recipe => recipe.RecipeLines)
-                .ThenInclude(line => line.Ingredient)
-            .Include(recipe => recipe.RecipeLines)
-                .ThenInclude(line => line.SubRecipe)
-                    .ThenInclude(subRecipe => subRecipe!.RecipeLines)
-                        .ThenInclude(subLine => subLine.Ingredient)
-            .FirstAsync(saved => saved.Id == recipe.Id);
+        var recipes = await LoadAllRecipes();
+        var created = recipes.First(saved => saved.Id == recipe.Id);
 
         return CreatedAtAction(
             nameof(GetById),
@@ -211,14 +192,8 @@ public class RecipesController(AppDbContext db) : ControllerBase
 
         await db.SaveChangesAsync();
 
-        var updated = await db
-            .Recipes.Include(recipe => recipe.RecipeLines)
-                .ThenInclude(line => line.Ingredient)
-            .Include(recipe => recipe.RecipeLines)
-                .ThenInclude(line => line.SubRecipe)
-                    .ThenInclude(subRecipe => subRecipe!.RecipeLines)
-                        .ThenInclude(subLine => subLine.Ingredient)
-            .FirstAsync(recipe => recipe.Id == id);
+        var recipes = await LoadAllRecipes();
+        var updated = recipes.First(recipe => recipe.Id == id);
 
         return Ok(RecipeResponse.From(updated));
     }
@@ -254,5 +229,13 @@ public class RecipesController(AppDbContext db) : ControllerBase
         }
 
         return false;
+    }
+
+    private async Task<List<Recipe>> LoadAllRecipes()
+    {
+        return await db
+            .Recipes.Include(recipe => recipe.RecipeLines)
+                .ThenInclude(line => line.Ingredient)
+            .ToListAsync();
     }
 }
