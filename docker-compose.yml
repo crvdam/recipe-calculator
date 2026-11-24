@@ -1,15 +1,25 @@
 services:
-  api:
-    build: ./src/RecipeCalculator.Api
-    restart: unless-stopped
-    environment:
-      ConnectionStrings__Default: "Data Source=/data/recipes.db"
-    volumes:
-      - api-data:/data
-    security_opt: ["no-new-privileges:true"]
-    cap_drop: [ALL]
-    ports:
-      - "127.0.0.1:8080:8080"   # tijdelijk, alleen bereikbaar vanaf de server zelf
+    api:
+        build: ./src/RecipeCalculator.Api
+        restart: unless-stopped
+        environment:
+            ConnectionStrings__Default: 'Data Source=/data/recipes.db'
+        volumes:
+            - api-data:/data
+        security_opt: ['no-new-privileges:true']
+        cap_drop: [ALL]
+        # Geen 'ports:' meer: alleen cloudflared praat met de API, via het interne Docker-netwerk
+
+    cloudflared:
+        image: cloudflare/cloudflared:latest
+        restart: unless-stopped
+        command: tunnel --no-autoupdate run
+        environment:
+            TUNNEL_TOKEN: ${TUNNEL_TOKEN} # komt uit het .env-bestand op de server
+        security_opt: ['no-new-privileges:true']
+        cap_drop: [ALL]
+        depends_on:
+            - api
 
 volumes:
-  api-data:
+    api-data:
