@@ -1,0 +1,15 @@
+services:
+  api:
+    build: ./src/RecipeCalculator.Api
+    restart: unless-stopped
+    environment:
+      ConnectionStrings__Default: "Data Source=/data/recipes.db"
+    volumes:
+      - api-data:/data
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    ports:
+      - "127.0.0.1:8080:8080"   # tijdelijk, alleen bereikbaar vanaf de server zelf
+
+volumes:
+  api-data:
