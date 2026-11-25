@@ -4,6 +4,7 @@ services:
         restart: unless-stopped
         environment:
             ConnectionStrings__Default: 'Data Source=/data/recipes.db'
+            ApiKey: ${API_KEY}
         volumes:
             - api-data:/data
         security_opt: ['no-new-privileges:true']
