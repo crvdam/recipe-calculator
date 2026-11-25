@@ -9,6 +9,9 @@ export default defineConfig({
             '/api': {
                 target: 'http://localhost:5150',
                 rewrite: (path) => path.replace(/^\/api/, ''),
+                headers: {
+                    'X-Api-Key': 'developmentApiKey',
+                },
             },
         },
     },

@@ -19,6 +19,12 @@ var connectionString = builder.Configuration.GetConnectionString("Default");
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString));
 
+var apiKey = builder.Configuration["ApiKey"];
+if (string.IsNullOrWhiteSpace(apiKey))
+{
+    throw new InvalidOperationException("ApiKey is not configured");
+}
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -32,6 +38,22 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.UseHttpsRedirection();
 }
+
+app.Use(
+    async (context, next) =>
+    {
+        var apiKeyHeader = context.Request.Headers["X-Api-Key"];
+
+        if (apiKeyHeader != apiKey)
+        {
+            context.Response.StatusCode = 401;
+
+            return;
+        }
+
+        await next(context);
+    }
+);
 
 app.UseAuthorization();
 
